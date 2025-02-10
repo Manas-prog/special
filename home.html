@@ -59,10 +59,22 @@
       if (stopMoving) return;
       
       if (hoverCount < 10) {
-        const x = Math.random() * (window.innerWidth - 50);
-        const y = Math.random() * (window.innerHeight - 50);
-        heart.style.transform = `translate(${x}px, ${y}px)`;
-        hoverCount++;
+      const rect = heart.getBoundingClientRect();
+      const offsetX = (Math.random() - 5) * 100; 
+      const offsetY = (Math.random() - 5) * 100;
+
+      let newX = rect.left + offsetX;
+      let newY = rect.top + offsetY;
+
+      // Ensure the heart stays within the screen bounds
+      const maxX = window.innerWidth - rect.width;
+      const maxY = window.innerHeight - rect.height;
+      
+      newX = Math.max(10, Math.min(newX, maxX - 10));
+      newY = Math.max(10, Math.min(newY, maxY - 10));
+
+      heart.style.transform = `translate(${newX - rect.left}px, ${newY - rect.top}px)`;
+      hoverCount++;
       } else {
         heart.style.transform = `translate(${initialX}px, ${initialY}px)`;
         stopMoving = true;
