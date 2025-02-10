@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To My Forever Valentine</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #ff7eb9, #ff758c);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+    .heart {
+      font-size: 2rem;
+      cursor: pointer;
+      display: inline-block;
+      position: absolute;
+      transition: transform 0.3s ease;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>To My Forever Valentine</h1>
+  <p>My Dearest Sneha,</p>
+  <p>From the moment I met you, my life has been filled with love, laughter, and endless joy. This Valentine's Day, I wanted to give you something as special as you are to me.</p>
+  <p>Love always,<br>Manas</p>
+
+  <div>
+    <p>Click the heart to see my favorite memory of us:</p>
+    <div class="heart" onclick="revealMemory()" onmouseover="moveHeart()">💖</div>
+    <img id="memory" src="special.jpg" alt="Our Memory" class="hidden" width="300">
+  </div>
+
+  <script>
+    let hoverCount = 0;
+    const initialX = 0;
+    const initialY = 0;
+    let stopMoving = false;
+
+    function revealMemory() {
+      document.getElementById('memory').classList.remove('hidden');
+    }
+
+    function moveHeart() {
+      const heart = document.querySelector('.heart');
+      if (stopMoving) return;
+      
+      if (hoverCount < 10) {
+        const x = Math.random() * (window.innerWidth - 50);
+        const y = Math.random() * (window.innerHeight - 50);
+        heart.style.transform = `translate(${x}px, ${y}px)`;
+        hoverCount++;
+      } else {
+        heart.style.transform = `translate(${initialX}px, ${initialY}px)`;
+        stopMoving = true;
+      }
+    }
+  </script>
+</body>
+</html>
