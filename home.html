@@ -6,33 +6,44 @@
   <title>To My Forever Valentine</title>
   <style>
     body {
-      font-family: 'Brush Script MT';
+      font-family: 'Brush Script MT', cursive;
       background: linear-gradient(135deg, #ff758c, #ff758c);
       color: white;
       text-align: center;
       padding: 20px;
+      overflow-y: auto;
+      min-height: 100vh;
     }
     h1 {
-      font-size: 3rem;
+      font-size: 5rem;
       margin-bottom: 20px;
     }
-    p {
-      font-size: 2rem;
-      line-height: 1.6;
+    .line {
+      white-space: nowrap;
+      overflow: hidden;
+      display: block;
+      font-size: 3rem;
+    }
+    .cursor::after {
+      content: "|";
+      display: inline-block;
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
     }
     .heart {
-      font-size: 2rem;
+      font-size: 4rem;
       cursor: pointer;
       display: inline-block;
-      position: absolute;
       transition: transform 0.3s ease;
     }
     .hidden {
       display: none;
     }
     .fade-in {
-      opacity: 0;
-      transition: opacity 1.5s ease-in;
+      opacity: 1;
+      transition: opacity 10s ease-in;
     }
     .image-container {
       display: flex;
@@ -40,6 +51,7 @@
       align-items: center;
       gap: 20px;
       margin-top: 20px;
+      flex-wrap: wrap;
     }
     .controls {
       margin-top: 20px;
@@ -58,68 +70,139 @@
     .button:hover {
       background-color: #ffccde;
     }
+    @keyframes fallingRoses {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    .rose {
+      position: absolute;
+      top: -50px;
+      font-size: 4rem;
+      animation: fallingRoses 5s linear infinite;
+    }
+    @keyframes jumpingChocolates {
+      0% { transform: translateY(100vh) scale(1); opacity: 1; }
+      50% { transform: translateY(calc(100vh - 600px)) scale(1.2); } /* Higher jump */
+      100% { transform: translateY(100vh) scale(1); opacity: 0; }
+    }
+    .chocolate {
+      position: absolute;
+      bottom: -50px;
+      font-size: 4rem;
+      animation: jumpingChocolates 4s ease-in-out infinite;
+    }
+    .dissolve {
+      opacity: 0;
+      transition: opacity 2s ease-out;
+    }
+    .final-image {
+      opacity: 0;
+      transition: opacity 2s ease-in;
+    }
+    .gif-container {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>To My Forever Valentine</h1>
-  <p>My Dearest Sneha,</p>
-  <p>From the moment I met you, my life has been filled with love, laughter, and endless joy. This Valentine's Day, I wanted to give you something as special as you are to me.</p>
-  <p>Love always,<br>Manas</p>
+
+  <div id="text-container"></div>
 
   <div>
-    <p>Click the heart to see my favorite memory of us:</p>
     <div class="heart" onclick="moveHeart()">💖</div>
     <div class="image-container">
-      <img id="memory1" src="special0.jpg" alt="Our Memory" class="hidden" width="300">
+      <img id="memory1" src="special0.jpg" alt="Our Memory" class="hidden fade-in" width="300">
       <img id="memory2" src="special1.jpg" alt="Another Memory" class="hidden fade-in" width="300">
       <img id="memory3" src="special2.jpg" alt="Another Memory" class="hidden fade-in" width="300">
       <img id="memory4" src="special3.jpg" alt="Another Memory" class="hidden fade-in" width="300">
+      <img id="final-memory" src="special10.jpg" alt="Final Memory" class="hidden final-image" width="300">
     </div>
   </div>
 
   <div class="controls hidden" id="audio-controls">
-    <button class="button" id="music-button" onclick="toggleAudio()">Play 🎶</button>
+    <button class="button" id="music-button" onclick="toggleAudio()">🎶</button>
+  </div>
+
+  <div id="final-text-container" class="hidden"></div>
+  <div id="gif-container" class="hidden gif-container">
+    <img src="dino.gif" alt="Dino GIF" width="300">
   </div>
 
   <audio id="background-music" src="Perfect.mp3" loop></audio>
 
   <script>
+    const texts = [
+      "",
+      "To My Forever Valentine",
+      "My Dearest Sneha,",
+      "From the moment I met you, my life has been filled with love, laughter, and endless joy.",
+      "This Valentine's Day, I wanted to give you something as special as you are to me.",
+      "Love always, Manas",
+      "Click the heart to see my favorite memory of us"
+    ];
+
+    const finalText = "Till we meet again in person, This is how I am doing";
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let textContainer = document.getElementById("text-container");
+    let finalTextContainer = document.getElementById("final-text-container");
+    let currentLine;
+
+    function typeText() {
+      if (charIndex === 0) {
+        if (currentLine) {
+          currentLine.classList.remove("cursor");
+        }
+        currentLine = document.createElement("div");
+        currentLine.classList.add("line", "cursor");
+        textContainer.appendChild(currentLine);
+      }
+
+      if (charIndex < texts[textIndex].length) {
+        currentLine.innerHTML += texts[textIndex][charIndex];
+        charIndex++;
+        setTimeout(typeText, 100);
+      } else {
+        setTimeout(() => {
+          charIndex = 0;
+          textIndex++;
+          if (textIndex < texts.length) {
+            typeText();
+          } else {
+            currentLine.classList.remove("cursor");
+          }
+        }, 500);
+      }
+    }
+
+    typeText();
+
     let hoverCount = 0;
     let stopMoving = false;
     let isPlaying = false;
 
     function moveHeart() {
       const heart = document.querySelector('.heart');
-      const memory1 = document.getElementById('memory1');
-      const memory2 = document.getElementById('memory2');
-      const memory3 = document.getElementById('memory3');
-      const memory4 = document.getElementById('memory4');
+      const memories = document.querySelectorAll('.image-container img');
       const controls = document.getElementById('audio-controls');
       const audio = document.getElementById('background-music');
 
-      if (hoverCount >= 10 && memory1.classList.contains('hidden')) {
-        memory1.classList.remove('hidden');
-        controls.classList.remove('hidden'); // Show 🎶 button
-        audio.play(); // Start audio only after 10 clicks
+      if (hoverCount >= 10) {
+        memories.forEach((memory, index) => {
+          setTimeout(() => {
+            memory.classList.remove('hidden');
+            memory.style.opacity = 1;
+          }, index * 5000);
+        });
+        controls.classList.remove('hidden');
+        audio.play();
         isPlaying = true;
-        updateButtonText();
 
-        // Show second image after 2 seconds with a fade-in effect
+        // Start the dissolve effect after all images have appeared
         setTimeout(() => {
-          memory2.classList.remove('hidden');
-          memory2.style.opacity = 1;
-        }, 10000);
-
-        setTimeout(() => {
-          memory3.classList.remove('hidden');
-          memory3.style.opacity = 1;
-        }, 20000);
-
-        setTimeout(() => {
-          memory4.classList.remove('hidden');
-          memory4.style.opacity = 1;
-        }, 30000);
-
+          dissolveImages();
+        }, 10000); // 10 seconds after all images appear
       }
 
       if (stopMoving) return;
@@ -146,19 +229,92 @@
       }
     }
 
-    function toggleAudio() {
-      const audio = document.getElementById('background-music');
-      if (isPlaying) {
-        audio.pause();
-      } else {
-        audio.play();
-      }
-      isPlaying = !isPlaying;
-      updateButtonText();
+    function dissolveImages() {
+      const memories = document.querySelectorAll('.image-container img:not(#final-memory)');
+      memories.forEach((memory) => {
+        memory.classList.add('dissolve');
+      });
+
+      // Remove the images from the DOM after the dissolve animation completes
+      setTimeout(() => {
+        memories.forEach((memory) => {
+          memory.remove();
+        });
+
+        // Show the final image
+        const finalMemory = document.getElementById('final-memory');
+        finalMemory.classList.remove('hidden');
+        finalMemory.style.opacity = 1;
+
+        // Remove text and images after 10 seconds of final image appearance
+        setTimeout(() => {
+          textContainer.innerHTML = ''; // Clear text
+          finalMemory.remove(); // Remove final image
+          showFinalText(); // Show the final text
+        }, 10000); // 10 seconds delay
+      }, 2000); // Wait for the dissolve effect to complete
     }
 
-    function updateButtonText() {
-      document.getElementById('music-button').innerText = isPlaying ? "🎶" : "🎶";
+    function showFinalText() {
+      finalTextContainer.classList.remove('hidden');
+      typeFinalText();
+    }
+
+    function typeFinalText() {
+      let finalCharIndex = 0;
+      const finalLine = document.createElement("div");
+      finalLine.classList.add("line", "cursor");
+      finalTextContainer.appendChild(finalLine);
+
+      function type() {
+        if (finalCharIndex < finalText.length) {
+          finalLine.innerHTML += finalText[finalCharIndex];
+          finalCharIndex++;
+          setTimeout(type, 100);
+        } else {
+          finalLine.classList.remove("cursor");
+          // Show the GIF after the final text is fully displayed
+          setTimeout(() => {
+            document.getElementById('gif-container').classList.remove('hidden');
+          }, 1000); // 1-second delay after text completes
+        }
+      }
+
+      type();
+    }
+
+    function createFallingRoses() {
+      const rose = document.createElement("div");
+      rose.innerHTML = "🌹";
+      rose.classList.add("rose");
+      rose.style.left = Math.random() * window.innerWidth + "px";
+      document.body.appendChild(rose);
+      setTimeout(() => { rose.remove(); }, 5000);
+    }
+    setInterval(createFallingRoses, 500);
+ 
+    function createJumpingChocolates() {
+      const chocolate = document.createElement("div");
+      chocolate.innerHTML = "💘";
+      chocolate.classList.add("chocolate");
+      chocolate.style.left = Math.random() * window.innerWidth + "px";
+      document.body.appendChild(chocolate);
+    }
+    setInterval(createJumpingChocolates, 10000);
+    
+    function toggleAudio() {
+      const audio = document.getElementById('background-music');
+      const button = document.getElementById('music-button');
+
+      if (isPlaying) {
+        audio.pause();
+        button.innerText = '🎶';
+      } else {
+        audio.play();
+        button.innerText = '⏸️';
+      }
+
+      isPlaying = !isPlaying;
     }
   </script>
 </body>
