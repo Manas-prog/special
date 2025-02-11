@@ -6,8 +6,8 @@
   <title>To My Forever Valentine</title>
   <style>
     body {
-      font-family: 'Georgia', serif;
-      background: linear-gradient(135deg, #ff7eb9, #ff758c);
+      font-family: 'Brush Script MT';
+      background: linear-gradient(135deg, #ff758c, #ff758c);
       color: white;
       text-align: center;
       padding: 20px;
@@ -17,7 +17,7 @@
       margin-bottom: 20px;
     }
     p {
-      font-size: 1.2rem;
+      font-size: 2rem;
       line-height: 1.6;
     }
     .heart {
@@ -30,6 +30,34 @@
     .hidden {
       display: none;
     }
+    .fade-in {
+      opacity: 0;
+      transition: opacity 1.5s ease-in;
+    }
+    .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    .button {
+      background-color: white;
+      color: #ff758c;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background-color: #ffccde;
+    }
   </style>
 </head>
 <body>
@@ -40,45 +68,97 @@
 
   <div>
     <p>Click the heart to see my favorite memory of us:</p>
-    <div class="heart" onclick="revealMemory()" onmouseover="moveHeart()">💖</div>
-    <img id="memory" src="special.jpg" alt="Our Memory" class="hidden" width="300">
+    <div class="heart" onclick="moveHeart()">💖</div>
+    <div class="image-container">
+      <img id="memory1" src="special0.jpg" alt="Our Memory" class="hidden" width="300">
+      <img id="memory2" src="special1.jpg" alt="Another Memory" class="hidden fade-in" width="300">
+      <img id="memory3" src="special2.jpg" alt="Another Memory" class="hidden fade-in" width="300">
+      <img id="memory4" src="special3.jpg" alt="Another Memory" class="hidden fade-in" width="300">
+    </div>
   </div>
+
+  <div class="controls hidden" id="audio-controls">
+    <button class="button" id="music-button" onclick="toggleAudio()">Play 🎶</button>
+  </div>
+
+  <audio id="background-music" src="Perfect.mp3" loop></audio>
 
   <script>
     let hoverCount = 0;
-    const initialX = 0;
-    const initialY = 0;
     let stopMoving = false;
-
-    function revealMemory() {
-      document.getElementById('memory').classList.remove('hidden');
-    }
+    let isPlaying = false;
 
     function moveHeart() {
       const heart = document.querySelector('.heart');
+      const memory1 = document.getElementById('memory1');
+      const memory2 = document.getElementById('memory2');
+      const memory3 = document.getElementById('memory3');
+      const memory4 = document.getElementById('memory4');
+      const controls = document.getElementById('audio-controls');
+      const audio = document.getElementById('background-music');
+
+      if (hoverCount >= 10 && memory1.classList.contains('hidden')) {
+        memory1.classList.remove('hidden');
+        controls.classList.remove('hidden'); // Show 🎶 button
+        audio.play(); // Start audio only after 10 clicks
+        isPlaying = true;
+        updateButtonText();
+
+        // Show second image after 2 seconds with a fade-in effect
+        setTimeout(() => {
+          memory2.classList.remove('hidden');
+          memory2.style.opacity = 1;
+        }, 10000);
+
+        setTimeout(() => {
+          memory3.classList.remove('hidden');
+          memory3.style.opacity = 1;
+        }, 20000);
+
+        setTimeout(() => {
+          memory4.classList.remove('hidden');
+          memory4.style.opacity = 1;
+        }, 30000);
+
+      }
+
       if (stopMoving) return;
-      
+
       if (hoverCount < 10) {
-      const rect = heart.getBoundingClientRect();
-      const offsetX = (Math.random() - 5) * 100; 
-      const offsetY = (Math.random() - 5) * 100;
+        const rect = heart.getBoundingClientRect();
+        const offsetX = (Math.random() - 0.5) * 100;
+        const offsetY = (Math.random() - 0.5) * 100;
 
-      let newX = rect.left + offsetX;
-      let newY = rect.top + offsetY;
+        let newX = rect.left + offsetX;
+        let newY = rect.top + offsetY;
 
-      // Ensure the heart stays within the screen bounds
-      const maxX = window.innerWidth - rect.width;
-      const maxY = window.innerHeight - rect.height;
-      
-      newX = Math.max(10, Math.min(newX, maxX - 10));
-      newY = Math.max(10, Math.min(newY, maxY - 10));
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
+        
+        newX = Math.max(10, Math.min(newX, maxX - 10));
+        newY = Math.max(10, Math.min(newY, maxY - 10));
 
-      heart.style.transform = `translate(${newX - rect.left}px, ${newY - rect.top}px)`;
-      hoverCount++;
+        heart.style.transform = `translate(${newX - rect.left}px, ${newY - rect.top}px)`;
+        hoverCount++;
       } else {
-        heart.style.transform = `translate(${initialX}px, ${initialY}px)`;
+        heart.style.transform = 'translate(0, 0)';
         stopMoving = true;
       }
+    }
+
+    function toggleAudio() {
+      const audio = document.getElementById('background-music');
+      if (isPlaying) {
+        audio.pause();
+      } else {
+        audio.play();
+      }
+      isPlaying = !isPlaying;
+      updateButtonText();
+    }
+
+    function updateButtonText() {
+      document.getElementById('music-button').innerText = isPlaying ? "🎶" : "🎶";
     }
   </script>
 </body>
