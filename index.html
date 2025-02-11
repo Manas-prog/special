@@ -1,22 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Restricted Access</title>
+    <title>Love Locked</title>
+    <style>
+        body {
+            background-color: #ffe6e6;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+            color: #d63384;
+        }
+        .container {
+            margin-top: 100px;
+            padding: 20px;
+            background: white;
+            display: inline-block;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #ff3366;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ff6699;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            background-color: #ff3366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d63384;
+        }
+        .heart {
+            font-size: 50px;
+            color: #ff3366;
+        }
+    </style>
     <script>
+        let errorCount = 0;
+        
         function checkPassword() {
             var password = document.getElementById("password").value;
-            if (password === "123") {
-                sessionStorage.setItem("authenticated", "true");
-                window.location.href = "home.html";
+            
+            if (password === "3118") {
+                window.location.href = "index.html";
+            } else if (password === "3103") {
+                alert("Not quite right, but close. Think of us together \u2764\uFE0F");
+            } else if (password === "1803") {
+                alert("Well thanks, but not as important as you \uD83D\uDC96");
             } else {
-                alert("Incorrect password. Try again!");
+                if (errorCount === 0) {
+                    alert("The password is a 4-digit number that means something special 🌟");
+                } else {
+                    alert("Oops! Try a number that comes from the heart 💓");
+                }
+                errorCount++;
             }
         }
     </script>
 </head>
 <body>
-    <h2>Enter Password to Access the Site</h2>
-    <input type="password" id="password">
-    <button onclick="checkPassword()">Submit</button>
+    <div class="container">
+        <div class="heart">&#10084;&#65039;</div>
+        <h2>Love is the Key</h2>
+        <p>Enter the special number that unlocks our memories.</p>
+        <input type="password" id="password" placeholder="****">
+        <br>
+        <button onclick="checkPassword()">Unlock</button>
+    </div>
 </body>
 </html>
