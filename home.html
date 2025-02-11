@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>To My Forever Valentine</title>
   <style>
+    /* General Styles */
     body {
       font-family: 'Brush Script MT', cursive;
       background: linear-gradient(135deg, #ff758c, #ff758c);
@@ -13,38 +14,49 @@
       padding: 20px;
       overflow-y: auto;
       min-height: 100vh;
+      box-sizing: border-box;
+      margin: 0;
     }
+
     h1 {
-      font-size: 5rem;
+      font-size: 4rem; /* Fixed size for desktop */
       margin-bottom: 20px;
     }
+
     .line {
       white-space: nowrap;
       overflow: hidden;
       display: block;
-      font-size: 3rem;
+      font-size: 2.5rem; /* Fixed size for desktop */
     }
+
     .cursor::after {
       content: "|";
       display: inline-block;
       animation: blink 0.7s infinite;
     }
+
     @keyframes blink {
       50% { opacity: 0; }
     }
+
     .heart {
-      font-size: 4rem;
+      font-size: 8rem; /* Fixed size for desktop */
       cursor: pointer;
       display: inline-block;
       transition: transform 0.3s ease;
+      margin-top: 20px;
     }
+
     .hidden {
       display: none;
     }
+
     .fade-in {
       opacity: 1;
       transition: opacity 10s ease-in;
     }
+
     .image-container {
       display: flex;
       justify-content: center;
@@ -53,9 +65,17 @@
       margin-top: 20px;
       flex-wrap: wrap;
     }
+
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
     .controls {
       margin-top: 20px;
     }
+
     .button {
       background-color: white;
       color: #ff758c;
@@ -67,40 +87,67 @@
       border-radius: 5px;
       transition: background 0.3s;
     }
+
     .button:hover {
       background-color: #ffccde;
     }
+
     @keyframes fallingRoses {
       0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
+
     .rose {
       position: absolute;
       top: -50px;
       font-size: 4rem;
       animation: fallingRoses 5s linear infinite;
     }
+
     @keyframes jumpingChocolates {
       0% { transform: translateY(100vh) scale(1); opacity: 1; }
-      50% { transform: translateY(calc(100vh - 600px)) scale(1.2); } /* Higher jump */
+      50% { transform: translateY(calc(100vh - 600px)) scale(1.2); }
       100% { transform: translateY(100vh) scale(1); opacity: 0; }
     }
+
     .chocolate {
       position: absolute;
       bottom: -50px;
       font-size: 4rem;
       animation: jumpingChocolates 4s ease-in-out infinite;
     }
+
     .dissolve {
       opacity: 0;
       transition: opacity 2s ease-out;
     }
+
     .final-image {
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
     .gif-container {
       margin-top: 20px;
+    }
+
+    /* Mobile-Specific Styles */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 10vw; /* Responsive for mobile */
+      }
+
+      .line {
+        font-size: 6vw; /* Responsive for mobile */
+      }
+
+      .heart {
+        font-size: 15vw; /* Responsive for mobile */
+      }
+
+      .image-container {
+        gap: 10px; /* Smaller gap for mobile */
+      }
     }
   </style>
 </head>
@@ -109,13 +156,13 @@
   <div id="text-container"></div>
 
   <div>
-    <div class="heart" onclick="moveHeart()">💖</div>
+    <div class="heart" onclick="moveHeart()" ontouchstart="moveHeart()">💖</div>
     <div class="image-container">
-      <img id="memory1" src="special0.jpg" alt="Our Memory" class="hidden fade-in" width="300">
-      <img id="memory2" src="special1.jpg" alt="Another Memory" class="hidden fade-in" width="300">
-      <img id="memory3" src="special2.jpg" alt="Another Memory" class="hidden fade-in" width="300">
-      <img id="memory4" src="special3.jpg" alt="Another Memory" class="hidden fade-in" width="300">
-      <img id="final-memory" src="special10.jpg" alt="Final Memory" class="hidden final-image" width="300">
+      <img id="memory1" src="special0.jpg" alt="Our Memory" class="hidden fade-in">
+      <img id="memory2" src="special1.jpg" alt="Another Memory" class="hidden fade-in">
+      <img id="memory3" src="special2.jpg" alt="Another Memory" class="hidden fade-in">
+      <img id="memory4" src="special3.jpg" alt="Another Memory" class="hidden fade-in">
+      <img id="final-memory" src="special10.jpg" alt="Final Memory" class="hidden final-image">
     </div>
   </div>
 
@@ -135,10 +182,12 @@
       "",
       "To My Forever Valentine",
       "My Dearest Sneha,",
-      "From the moment I met you, my life has been filled with love, laughter, and endless joy.",
-      "This Valentine's Day, I wanted to give you something as special as you are to me.",
+      "From the moment I met you, ",
+      "my life has been filled with love, laughter, and endless joy.",
+      "This Valentine's Day, I wanted to give you something ",
+      "as special as you are to me.",
       "Love always, Manas",
-      "Click the heart to see my favorite memory of us"
+      "Click the heart to see my favorite memories of us"
     ];
 
     const finalText = "Till we meet again in person, This is how I am doing";
@@ -199,10 +248,9 @@
         audio.play();
         isPlaying = true;
 
-        // Start the dissolve effect after all images have appeared
         setTimeout(() => {
           dissolveImages();
-        }, 10000); // 10 seconds after all images appear
+        }, 20000);
       }
 
       if (stopMoving) return;
@@ -235,24 +283,21 @@
         memory.classList.add('dissolve');
       });
 
-      // Remove the images from the DOM after the dissolve animation completes
       setTimeout(() => {
         memories.forEach((memory) => {
           memory.remove();
         });
 
-        // Show the final image
         const finalMemory = document.getElementById('final-memory');
         finalMemory.classList.remove('hidden');
         finalMemory.style.opacity = 1;
 
-        // Remove text and images after 10 seconds of final image appearance
         setTimeout(() => {
-          textContainer.innerHTML = ''; // Clear text
-          finalMemory.remove(); // Remove final image
-          showFinalText(); // Show the final text
-        }, 10000); // 10 seconds delay
-      }, 2000); // Wait for the dissolve effect to complete
+          textContainer.innerHTML = '';
+          finalMemory.remove();
+          showFinalText();
+        }, 10000);
+      }, 20000);
     }
 
     function showFinalText() {
@@ -273,10 +318,9 @@
           setTimeout(type, 100);
         } else {
           finalLine.classList.remove("cursor");
-          // Show the GIF after the final text is fully displayed
           setTimeout(() => {
             document.getElementById('gif-container').classList.remove('hidden');
-          }, 1000); // 1-second delay after text completes
+          }, 2000);
         }
       }
 
@@ -291,8 +335,8 @@
       document.body.appendChild(rose);
       setTimeout(() => { rose.remove(); }, 5000);
     }
-    setInterval(createFallingRoses, 500);
- 
+    setInterval(createFallingRoses, 1000);
+
     function createJumpingChocolates() {
       const chocolate = document.createElement("div");
       chocolate.innerHTML = "💘";
@@ -300,8 +344,8 @@
       chocolate.style.left = Math.random() * window.innerWidth + "px";
       document.body.appendChild(chocolate);
     }
-    setInterval(createJumpingChocolates, 10000);
-    
+    setInterval(createJumpingChocolates, 15000);
+
     function toggleAudio() {
       const audio = document.getElementById('background-music');
       const button = document.getElementById('music-button');
