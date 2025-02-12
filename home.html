@@ -198,6 +198,9 @@
     let finalTextContainer = document.getElementById("final-text-container");
     let currentLine;
 
+    // Flag to check if final text has been displayed
+    let isFinalTextDisplayed = false;
+
     function typeText() {
       if (charIndex === 0) {
         if (currentLine) {
@@ -301,6 +304,9 @@
     }
 
     function showFinalText() {
+      if (isFinalTextDisplayed) return; // Prevent multiple calls
+      isFinalTextDisplayed = true; // Set flag to true
+
       finalTextContainer.classList.remove('hidden');
       typeFinalText();
     }
